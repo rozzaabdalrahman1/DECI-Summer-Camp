@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DECI Summer Camp - Think of a Better Way (Problem Solving)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deciDeepBlue: '#0c3d78',
+                        deciBrightBlue: '#2563eb',
+                        deciGreen: '#16a34a',
+                        deciDarkGreen: '#15803d',
+                        deciLightGreen: '#dcfce7',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Slide bottom-left quarter circle shape matching prompt theme */
+        .deci-bottom-left-badge {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 320px;
+            height: 290px;
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            border-top-right-radius: 100%;
+            z-index: 10;
+            box-shadow: 4px -4px 20px rgba(0,0,0,0.12);
+            pointer-events: none;
+        }
+
+        /* Slide bottom-right blue corner triangle */
+        .deci-bottom-right-corner {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 0 250px 250px;
+            border-color: transparent transparent #2563eb transparent;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Card animations */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .shake-err {
+            animation: shake 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
+
+    <!-- Presentation Header Control Bar -->
+    <header class="bg-slate-950/90 text-white px-6 py-3 border-b border-slate-800 flex flex-wrap justify-between items-center z-30 shadow-md">
+        <div class="flex items-center space-x-3">
+            <span class="bg-deciGreen text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full text-white shadow-sm">DECI Camp</span>
+            <h1 class="text-base md:text-lg font-semibold tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                Think of a Better Way: Problem Solving & Innovation
+            </h1>
+        </div>
+        
+        <!-- Interactive Controls -->
+        <div class="flex items-center space-x-3 mt-2 sm:mt-0">
+            <button onclick="resetBoard()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:border-slate-500 transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-rotate-left"></i> Reset Board
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Single Page Canvas -->
+    <main class="flex-1 flex items-center justify-center p-3 sm:p-6 my-auto">
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden relative border border-slate-200 min-h-[620px] flex flex-col justify-between p-6 md:p-8 md:pl-28 md:pr-16">
+            
+            <!-- STYLIZED BRANDING OVERLAYS -->
+            <!-- Bottom Left Green Semi-Circle Badge -->
+            <div class="deci-bottom-left-badge hidden md:flex flex-col justify-end p-6 text-white text-left">
+                <h3 class="text-2xl font-bold tracking-tight mb-1">Think of a Better Way</h3>
+                <p class="text-xs text-green-100 max-w-[170px] leading-relaxed mb-4">
+                    Root cause analysis, ideation, and decision matrix.
+                </p>
+                <div class="mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-3xl opacity-90"></i>
+                    <i class="fa-solid fa-gears text-2xl opacity-80"></i>
+                </div>
+            </div>
+
+            <!-- Bottom Right Blue Accent Triangle -->
+            <div class="deci-bottom-right-corner hidden md:block"></div>
+            <div class="absolute bottom-4 right-4 z-20 hidden md:block text-white">
+                <i class="fa-solid fa-chart-line text-3xl opacity-80"></i>
+            </div>
+
+            <!-- MAIN WORKSHOP CONTENT -->
+            <div class="relative z-20 space-y-6">
+                
+                <!-- SECTION 1: Problem Solving Pillars Grid -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-black text-deciDarkGreen uppercase tracking-widest bg-green-50 px-2.5 py-1 rounded-md border border-green-200">
+                            Problem Solving Framework
+                        </span>
+                        <span class="text-xs text-slate-400 font-mono">3 Core Pillars</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Card 1: Root Cause Analysis -->
+                        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-green-400 hover:shadow-md transition">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <div class="w-7 h-7 rounded-lg bg-green-100 text-green-700 flex items-center justify-center font-bold text-xs">
+                                    <i class="fa-solid fa-magnifying-glass font-bold"></i>
+                                </div>
+                                <h4 class="font-bold text-sm text-slate-800">Root Cause Analysis</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Use <strong>5-Whys</strong> to separate surface symptoms from real underlying problems.
+                            </p>
+                        </div>
+
+                        <!-- Card 2: Ideation & Brainstorming -->
+                        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-md transition">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-xs">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                                <h4 class="font-bold text-sm text-slate-800">Ideation & Brainstorming</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Generating <strong>12+ innovative solutions</strong> before judging or filtering any ideas.
+                            </p>
+                        </div>
+
+                        <!-- Card 3: Decision Matrix -->
+                        <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-xl hover:border-blue-400 hover:shadow-md transition">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                                    <i class="fa-solid fa-sliders"></i>
+                                </div>
+                                <h4 class="font-bold text-sm text-slate-800">Decision Matrix</h4>
+                            </div>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Evaluate options by <strong>Impact, Effort, Feasibility</strong>, and available <strong>Resources</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KEY TAKEAWAY BANNER -->
+                <div class="bg-gradient-to-r from-green-50 via-emerald-50 to-blue-50 border-l-4 border-deciGreen p-3.5 rounded-r-xl shadow-xs flex items-center gap-3">
+                    <i class="fa-solid fa-quote-left text-deciGreen text-xl"></i>
+                    <p class="text-xs md:text-sm text-slate-800 font-semibold">
+                        <span class="text-deciDarkGreen font-bold">Key Takeaway:</span> "Innovation is choosing the most practical and high-impact path."
+                    </p>
+                </div>
+
+                <!-- SECTION 2: 2 Interactive Scenario Questions -->
+                <div class="space-y-5 pt-2">
+                    <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-question text-deciGreen"></i> Interactive Problem Solving Practice
+                        </h3>
+                        <span class="text-xs font-bold bg-amber-100 text-amber-800 px-3 py-1 rounded-full border border-amber-300">
+                            <i class="fa-solid fa-star text-amber-500 mr-1"></i> Score: <span id="score-display">0</span> / 200 pts
+                        </span>
+                    </div>
+
+                    <!-- QUESTION 1 SCENARIO -->
+                    <div class="bg-slate-50/90 border border-slate-200 rounded-xl p-4 shadow-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-extrabold text-deciDarkGreen uppercase tracking-wider bg-green-100 px-2 py-0.5 rounded">
+                                Scenario 1: Root Cause Analysis
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">100 pts</span>
+                        </div>
+
+                        <p class="text-xs md:text-sm font-semibold text-slate-800 mb-3">
+                            <i class="fa-solid fa-bug text-rose-500 mr-1"></i> Your team presentation code keeps crashing right before the demo. Teammates want to keep restarting it. How do you find the real fix?
+                        </p>
+
+                        <div class="space-y-2" id="q1-options">
+                            <!-- Options injected by JS -->
+                        </div>
+                        <div id="q1-feedback" class="mt-2 text-xs font-semibold"></div>
+                    </div>
+
+                    <!-- QUESTION 2 SCENARIO -->
+                    <div class="bg-slate-50/90 border border-slate-200 rounded-xl p-4 shadow-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-extrabold text-deciBrightBlue uppercase tracking-wider bg-blue-100 px-2 py-0.5 rounded">
+                                Scenario 2: Decision Matrix & Innovation
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">100 pts</span>
+                        </div>
+
+                        <p class="text-xs md:text-sm font-semibold text-slate-800 mb-3">
+                            <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i> Your team brainstormed 15 innovative ideas, but you only have 2 hours left before presentation. How do you pick the winning option?
+                        </p>
+
+                        <div class="space-y-2" id="q2-options">
+                            <!-- Options injected by JS -->
+                        </div>
+                        <div id="q2-feedback" class="mt-2 text-xs font-semibold"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- BOTTOM WORKSHOP FOOTER -->
+            <div class="relative z-30 mt-6 pt-3 border-t border-slate-200 flex flex-wrap justify-between items-center text-xs text-slate-500 gap-2">
+                <span>DECI Summer Camp &bull; Think of a Better Way Workshop</span>
+                <button onclick="triggerConfetti()" class="px-4 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg shadow-xs transition cursor-pointer flex items-center gap-1.5">
+                    <i class="fa-solid fa-party-horn"></i> Celebrate Innovation!
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // State tracking
+        const userState = {
+            q1: { attempted: false, correct: false, selected: null },
+            q2: { attempted: false, correct: false, selected: null }
+        };
+
+        // Synthesize Sound Effects using Web Audio API
+        function playSound(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.05);
+                }
+            } catch (e) {
+                // Audio fallback
+            }
+        }
+
+        // Questions Data
+        const q1Data = [
+            {
+                id: 'A',
+                title: 'Use 5-Whys Root Cause Analysis',
+                desc: 'Ask "Why did it crash?" 5 times to separate the surface bug from the real underlying code problem.',
+                correct: true
+            },
+            {
+                id: 'B',
+                title: 'Quick Temporary Restart',
+                desc: 'Keep restarting the app every time it crashes without checking why it failed.',
+                correct: false
+            },
+            {
+                id: 'C',
+                title: 'Blame & Abandon',
+                desc: 'Give up on the feature entirely and blame the laptop hardware.',
+                correct: false
+            }
+        ];
+
+        const q2Data = [
+            {
+                id: 'A',
+                title: 'Apply Decision Matrix (High Impact & High Feasibility)',
+                desc: 'Evaluate ideas by Impact vs Effort/Resources to pick the most practical high-value path.',
+                correct: true
+            },
+            {
+                id: 'B',
+                title: 'Pick the Most Complex Idea',
+                desc: 'Choose the hardest idea that takes 5 hours to build even though you only have 2 hours.',
+                correct: false
+            },
+            {
+                id: 'C',
+                title: 'Build All 15 Ideas Simultaneously',
+                desc: 'Try doing everything at once without prioritizing or measuring feasibility.',
+                correct: false
+            }
+        ];
+
+        function renderQ1() {
+            const container = document.getElementById('q1-options');
+            const feedback = document.getElementById('q1-feedback');
+            const q = userState.q1;
+
+            container.innerHTML = q1Data.map(opt => {
+                let borderStyle = "border-slate-200 bg-white hover:border-green-400 hover:bg-green-50/50";
+                let icon = `<span class="w-5 h-5 rounded-full bg-slate-100 font-bold text-slate-500 text-[10px] flex items-center justify-center border border-slate-300 mr-2 shrink-0">${opt.id}</span>`;
+
+                if (q.attempted) {
+                    if (opt.correct) {
+                        borderStyle = "border-emerald-500 bg-emerald-50 text-emerald-900 font-medium";
+                        icon = `<i class="fa-solid fa-circle-check text-emerald-600 text-base mr-2 shrink-0"></i>`;
+                    } else if (q.selected === opt.id && !opt.correct) {
+                        borderStyle = "border-rose-400 bg-rose-50 text-rose-900 font-medium shake-err";
+                        icon = `<i class="fa-solid fa-circle-xmark text-rose-500 text-base mr-2 shrink-0"></i>`;
+                    }
+                }
+
+                return `
+                    <button onclick="handleSelect('q1', '${opt.id}', ${opt.correct})" 
+                            class="w-full text-left p-2.5 rounded-lg border transition flex items-start cursor-pointer ${borderStyle}">
+                        ${icon}
+                        <div class="flex-1">
+                            <span class="text-xs font-bold text-slate-800 block">${opt.title}</span>
+                            <span class="text-[11px] text-slate-600 leading-snug block">${opt.desc}</span>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+
+            if (q.attempted) {
+                if (q.correct) {
+                    feedback.className = "mt-2 p-2 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs";
+                    feedback.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>Spot on! (+100 pts)</strong> Root Cause Analysis (5-Whys) finds real underlying problems instead of just treating surface symptoms.`;
+                } else {
+                    feedback.className = "mt-2 p-2 rounded-lg bg-rose-100 border border-rose-300 text-rose-900 text-xs flex justify-between items-center";
+                    feedback.innerHTML = `<span><i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> Temporary fixes leave hidden bugs! Try applying 5-Whys.</span>
+                    <button onclick="retryQ('q1')" class="underline font-bold text-rose-950 hover:text-black ml-2 cursor-pointer">Retry <i class="fa-solid fa-rotate-left"></i></button>`;
+                }
+            } else {
+                feedback.className = "hidden";
+                feedback.innerHTML = "";
+            }
+        }
+
+        function renderQ2() {
+            const container = document.getElementById('q2-options');
+            const feedback = document.getElementById('q2-feedback');
+            const q = userState.q2;
+
+            container.innerHTML = q2Data.map(opt => {
+                let borderStyle = "border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/50";
+                let icon = `<span class="w-5 h-5 rounded-full bg-slate-100 font-bold text-slate-500 text-[10px] flex items-center justify-center border border-slate-300 mr-2 shrink-0">${opt.id}</span>`;
+
+                if (q.attempted) {
+                    if (opt.correct) {
+                        borderStyle = "border-emerald-500 bg-emerald-50 text-emerald-900 font-medium";
+                        icon = `<i class="fa-solid fa-circle-check text-emerald-600 text-base mr-2 shrink-0"></i>`;
+                    } else if (q.selected === opt.id && !opt.correct) {
+                        borderStyle = "border-rose-400 bg-rose-50 text-rose-900 font-medium shake-err";
+                        icon = `<i class="fa-solid fa-circle-xmark text-rose-500 text-base mr-2 shrink-0"></i>`;
+                    }
+                }
+
+                return `
+                    <button onclick="handleSelect('q2', '${opt.id}', ${opt.correct})" 
+                            class="w-full text-left p-2.5 rounded-lg border transition flex items-start cursor-pointer ${borderStyle}">
+                        ${icon}
+                        <div class="flex-1">
+                            <span class="text-xs font-bold text-slate-800 block">${opt.title}</span>
+                            <span class="text-[11px] text-slate-600 leading-snug block">${opt.desc}</span>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+
+            if (q.attempted) {
+                if (q.correct) {
+                    feedback.className = "mt-2 p-2 rounded-lg bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs";
+                    feedback.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> <strong>Excellent choice! (+100 pts)</strong> A Decision Matrix selects the most practical and high-impact path for available time and resources.`;
+                } else {
+                    feedback.className = "mt-2 p-2 rounded-lg bg-rose-100 border border-rose-300 text-rose-900 text-xs flex justify-between items-center";
+                    feedback.innerHTML = `<span><i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> Remember: Innovation requires evaluating Impact vs Effort & Resources!</span>
+                    <button onclick="retryQ('q2')" class="underline font-bold text-rose-950 hover:text-black ml-2 cursor-pointer">Retry <i class="fa-solid fa-rotate-left"></i></button>`;
+                }
+            } else {
+                feedback.className = "hidden";
+                feedback.innerHTML = "";
+            }
+        }
+
+        // Response Click Event
+        function handleSelect(questionKey, optionId, isCorrect) {
+            userState[questionKey].attempted = true;
+            userState[questionKey].selected = optionId;
+            userState[questionKey].correct = isCorrect;
+
+            playSound(isCorrect ? 'correct' : 'wrong');
+            updateUI();
+
+            if (userState.q1.correct && userState.q2.correct) {
+                setTimeout(triggerConfetti, 300);
+            }
+        }
+
+        function retryQ(questionKey) {
+            playSound('click');
+            userState[questionKey].attempted = false;
+            userState[questionKey].selected = null;
+            userState[questionKey].correct = false;
+            updateUI();
+        }
+
+        function updateScore() {
+            let total = 0;
+            if (userState.q1.correct) total += 100;
+            if (userState.q2.correct) total += 100;
+            document.getElementById('score-display').innerText = total;
+        }
+
+        function updateUI() {
+            renderQ1();
+            renderQ2();
+            updateScore();
+        }
+
+        function resetBoard() {
+            playSound('click');
+            userState.q1 = { attempted: false, correct: false, selected: null };
+            userState.q2 = { attempted: false, correct: false, selected: null };
+            updateUI();
+        }
+
+        // Celebration Confetti
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Initialize board
+        window.onload = function() {
+            updateUI();
+        };
+    </script>
+</body>
+</html>
