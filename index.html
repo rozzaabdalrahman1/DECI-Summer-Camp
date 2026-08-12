@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Choose</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .activity-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-decoration: none;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .activity-card:hover {
+      transform: translateY(-6px);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #38bdf8;
+      box-shadow: 0 12px 24px -10px rgba(56, 189, 248, 0.3);
+    }
+
+    .activity-number {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #38bdf8;
+      margin-bottom: 8px;
+    }
+
+    .activity-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: #38bdf8;
+      color: #0f172a;
+      border-radius: 20px;
+      transition: background-color 0.2s ease;
+    }
+
+    .activity-card:hover .btn {
+      background: #7dd3fc;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Activity Choose</h1>
+    <p>Select an activity below to get started</p>
+  </header>
+
+  <main class="grid-container">
+    <a href="/activity1/" class="activity-card">
+      <span class="activity-number">Option 01</span>
+      <h2 class="activity-title">Activity 1</h2>
+      <span class="btn">Open &rarr;</span>
+    </a>
+
+    <a href="/activity2/" class="activity-card">
+      <span class="activity-number">Option 02</span>
+      <h2 class="activity-title">Activity 2</h2>
+      <span class="btn">Open &rarr;</span>
+    </a>
+
+    <a href="/activity3/" class="activity-card">
+      <span class="activity-number">Option 03</span>
+      <h2 class="activity-title">Activity 3</h2>
+      <span class="btn">Open &rarr;</span>
+    </a>
+
+    <a href="/activity4/" class="activity-card">
+      <span class="activity-number">Option 04</span>
+      <h2 class="activity-title">Activity 4</h2>
+      <span class="btn">Open &rarr;</span>
+    </a>
+  </main>
+
+</body>
+</html>
