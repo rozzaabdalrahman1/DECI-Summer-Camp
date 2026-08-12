@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DECI Summer Camp - Communication Skills Interactive Presentation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for graduation celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deciDeepBlue: '#0c3d78',
+                        deciMidBlue: '#1d4ed8',
+                        deciBrightBlue: '#2563eb',
+                        deciLightBlue: '#60a5fa',
+                        deciAccentBg: '#eff6ff',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Styles for presentation aesthetics */
+        .slide-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Slide bottom-left quarter circle shape matching prompt image */
+        .deci-bottom-left-badge {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 340px;
+            height: 300px;
+            background: linear-gradient(135deg, #0f4c81 0%, #0c3d78 100%);
+            border-top-right-radius: 100%;
+            z-index: 10;
+            box-shadow: 4px -4px 20px rgba(0,0,0,0.15);
+            pointer-events: none;
+        }
+
+        /* Slide bottom-right triangle shape matching prompt image */
+        .deci-bottom-right-corner {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 0 280px 280px;
+            border-color: transparent transparent #2563eb transparent;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism overlays */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(219, 234, 254, 0.8);
+        }
+
+        /* Pulse animation for interactive cues */
+        @keyframes subtlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .pulse-subtle {
+            animation: subtlePulse 3s infinite ease-in-out;
+        }
+
+        /* Shake animation for incorrect answer */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .shake-err {
+            animation: shake 0.4s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 font-sans min-h-screen flex flex-col justify-between overflow-x-hidden select-none">
+
+    <!-- Presentation Header Control Bar -->
+    <header class="bg-slate-950/80 text-white px-6 py-3 border-b border-slate-800 flex flex-wrap justify-between items-center z-30 shadow-md">
+        <div class="flex items-center space-x-3">
+            <span class="bg-deciBrightBlue text-xs font-bold uppercase tracking-widest px-2.5 py-1 rounded-full text-white shadow-sm">DECI Camp</span>
+            <h1 class="text-lg font-semibold tracking-wide flex items-center gap-2">
+                <i class="fa-solid fa-comments text-deciLightBlue"></i>
+                Final Presentation: Communication Masterclass
+            </h1>
+        </div>
+        
+        <!-- Controls & Progress indicator -->
+        <div class="flex items-center space-x-4 mt-2 sm:mt-0">
+            <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                <span class="text-xs text-slate-400">Progress:</span>
+                <div class="w-28 bg-slate-700 h-2 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="bg-deciBrightBlue h-full w-1/5 transition-all duration-300"></div>
+                </div>
+                <span id="slide-number-display" class="text-xs font-bold text-deciLightBlue">Slide 1/5</span>
+            </div>
+
+            <!-- Global Retry Button -->
+            <button onclick="resetPresentation()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-3 py-1.5 rounded-lg border border-slate-700 hover:border-slate-500 transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-rotate-left"></i> Start Over
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Presentation Stage (Slide Viewport) -->
+    <main class="flex-1 flex items-center justify-center p-2 sm:p-6 relative my-auto">
+        
+        <!-- Interactive Slide Card Frame (Mimicking Presentation Canvas) -->
+        <div class="w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden relative border border-slate-200 min-h-[580px] flex flex-col justify-between transition-all duration-500">
+            
+            <!-- STYLIZED BRANDING OVERLAYS (Matching user slide image) -->
+            <!-- Bottom Left Semi-Circle Badge -->
+            <div class="deci-bottom-left-badge hidden md:flex flex-col justify-end p-6 text-white text-left">
+                <h3 class="text-2xl font-bold tracking-tight mb-1">Communication</h3>
+                <p class="text-xs text-blue-100 max-w-[180px] leading-relaxed mb-4">
+                    Sharing ideas, listening closely, understanding others.
+                </p>
+                <div class="mb-2">
+                    <i class="fa-solid fa-comments text-3xl opacity-90 drop-shadow"></i>
+                </div>
+            </div>
+
+            <!-- Bottom Right Blue Accent Triangle -->
+            <div class="deci-bottom-right-corner hidden md:block"></div>
+            <div class="absolute bottom-4 right-4 z-20 hidden md:block text-white">
+                <i class="fa-regular fa-comment-dots text-3xl opacity-80 transform -rotate-12"></i>
+            </div>
+
+            <!-- Dynamic Slide Content Area -->
+            <div id="slide-container" class="relative z-20 flex-1 p-6 md:p-10 md:pl-28 md:pr-20 flex flex-col justify-center">
+                <!-- SLIDE CONTENT WILL BE INJECTED HERE BY JAVASCRIPT -->
+            </div>
+
+            <!-- SLIDE FOOTER NAVIGATION CONTROLS -->
+            <div class="relative z-30 bg-slate-50/90 border-t border-slate-100 px-6 py-4 flex justify-between items-center">
+                <button id="prev-btn" onclick="prevSlide()" class="px-4 py-2 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300 disabled:opacity-30 disabled:cursor-not-allowed font-medium text-sm transition flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-arrow-left"></i> Previous
+                </button>
+
+                <div class="flex items-center gap-2">
+                    <span id="score-tag" class="hidden text-xs bg-emerald-100 text-emerald-800 font-semibold px-3 py-1 rounded-full border border-emerald-300">
+                        <i class="fa-solid fa-star text-amber-500 mr-1"></i> Interactive Score: <span id="current-score">0</span> pts
+                    </span>
+                </div>
+
+                <button id="next-btn" onclick="nextSlide()" class="px-5 py-2 rounded-xl bg-deciBrightBlue hover:bg-deciMidBlue text-white font-medium text-sm shadow-md hover:shadow-lg transition flex items-center gap-2 cursor-pointer">
+                    Next <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer info -->
+    <footer class="bg-slate-950 text-slate-500 text-xs text-center py-2 z-30 border-t border-slate-900">
+        DECI Summer Camp Final Presentation &bull; Interactive Communication Module &bull; Multi-Try Unlimited Practice Mode
+    </footer>
+
+    <script>
+        // State variables for presentation logic
+        let currentSlide = 0;
+        let score = 0;
+        
+        // Tracking question progress and user choices (allows infinite retries!)
+        const userState = {
+            q1: { attempted: false, correct: false, selected: null },
+            q2: { attempted: false, matches: { 0: null, 1: null, 2: null, 3: null } },
+            q3: { attempted: false, chosenScore: 0 }
+        };
+
+        // Synthesize Sound Effects using Web Audio API (No external sound file dependencies)
+        function playSound(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+                    osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.25); // G5
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.35);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+                    osc.frequency.exponentialRampToValueAtTime(164.81, ctx.currentTime + 0.2); // E3
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                } else if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, ctx.currentTime);
+                    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.05);
+                }
+            } catch (e) {
+                // Audio context fallback if muted
+            }
+        }
+
+        // SLIDE DEFINITIONS
+        const slides = [
+            // SLIDE 0: Title Slide (Inspired by prompt image)
+            {
+                type: 'intro',
+                render: () => `
+                    <div class="max-w-2xl my-auto animate-fade-in">
+                        <div class="inline-flex items-center gap-2 bg-blue-100 text-deciDeepBlue px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-blue-200">
+                            <i class="fa-solid fa-sparkles text-amber-500"></i> Welcome DECI Evaluators & Campers
+                        </div>
+                        <h2 class="text-3xl md:text-5xl font-extrabold text-deciDeepBlue leading-tight mb-4">
+                            Mastering Effective Communication
+                        </h2>
+                        <p class="text-base md:text-lg text-slate-600 mb-6 leading-relaxed">
+                            "Sharing ideas, listening closely, understanding others."
+                        </p>
+                        <div class="bg-blue-50/80 border-l-4 border-deciBrightBlue p-4 rounded-r-xl mb-8 text-sm text-slate-700 shadow-sm">
+                            <p class="font-semibold text-deciDeepBlue flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500"></i> Interactive Presentation Instructions:
+                            </p>
+                            <p class="mt-1">
+                                This presentation contains <strong>3 interactive challenges</strong> to test communication strategies in real-world team scenarios. You can try each challenge <strong>as many times as you like</strong> to improve your score!
+                            </p>
+                        </div>
+                        <button onclick="nextSlide()" class="px-6 py-3 bg-deciBrightBlue hover:bg-deciMidBlue text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition transform active:scale-95 flex items-center gap-3 cursor-pointer text-base">
+                            Start Interactive Presentation <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                `
+            },
+
+            <!-- SLIDE 1: QUESTION 1 - Active Listening Scenario -->
+            {
+                type: 'question1',
+                render: () => {
+                    const q1 = userState.q1;
+                    return `
+                    <div class="w-full max-w-3xl my-auto">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-extrabold text-deciBrightBlue uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
+                                Activity 1 of 3: Active Listening
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">Unlimited Retries Available</span>
+                        </div>
+                        
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900 mb-3">
+                            Activity 1: The Excited Teammate
+                        </h3>
+                        
+                        <p class="text-sm md:text-base text-slate-700 mb-5 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                            <i class="fa-solid fa-quote-left text-deciLightBlue mr-2"></i>
+                            <strong>Scenario:</strong> Your DECI teammate is excited and talking fast about a new idea for your project. <strong>What is the best way to listen?</strong>
+                        </p>
+
+                        <!-- Question Options -->
+                        <div class="space-y-2.5 mb-5">
+                            ${[
+                                { id: 'A', text: "Interrupt them immediately to share your own idea instead.", correct: false },
+                                { id: 'B', text: "Listen carefully, nod, and repeat back what you heard to make sure you understood.", correct: true },
+                                { id: 'C', text: "Look at your phone while they talk and say 'yeah whatever'.", correct: false },
+                                { id: 'D', text: "Tell them to stop talking so fast because you don't have time.", correct: false }
+                            ].map((opt) => {
+                                const isSelected = q1.selected === opt.id;
+                                let btnStyle = "border-slate-200 bg-white hover:border-deciBrightBlue hover:bg-blue-50/50 text-slate-700";
+                                let icon = `<span class="w-6 h-6 rounded-full bg-slate-100 font-bold text-slate-500 text-xs flex items-center justify-center border border-slate-300 mr-3">${opt.id}</span>`;
+                                
+                                if (q1.attempted) {
+                                    if (opt.correct) {
+                                        btnStyle = "border-emerald-500 bg-emerald-50/90 text-emerald-900 font-medium shadow-sm";
+                                        icon = `<i class="fa-solid fa-circle-check text-emerald-600 text-lg mr-3"></i>`;
+                                    } else if (isSelected && !opt.correct) {
+                                        btnStyle = "border-rose-400 bg-rose-50 text-rose-900 font-medium shake-err";
+                                        icon = `<i class="fa-solid fa-circle-xmark text-rose-500 text-lg mr-3"></i>`;
+                                    }
+                                }
+
+                                return `
+                                    <button onclick="handleQ1Answer('${opt.id}', ${opt.correct})" 
+                                            class="w-full text-left p-3.5 rounded-xl border-2 transition-all flex items-center cursor-pointer ${btnStyle}">
+                                        ${icon}
+                                        <span class="text-xs md:text-sm flex-1 font-medium">${opt.text}</span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <!-- Feedback Box -->
+                        <div id="q1-feedback" class="${q1.attempted ? 'block' : 'hidden'} p-4 rounded-xl mb-3 text-xs md:text-sm transition-all">
+                            ${q1.attempted ? (q1.correct ? `
+                                <div class="bg-emerald-100/90 border border-emerald-300 text-emerald-800 p-3.5 rounded-lg flex items-start gap-3">
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-xl mt-0.5"></i>
+                                    <div>
+                                        <strong>Great choice! (+100 pts)</strong> Listening carefully and repeating what you heard shows you respect your teammate and understand their idea.
+                                    </div>
+                                </div>
+                            ` : `
+                                <div class="bg-rose-100/90 border border-rose-300 text-rose-800 p-3.5 rounded-lg flex items-start gap-3">
+                                    <i class="fa-solid fa-triangle-exclamation text-rose-600 text-xl mt-0.5"></i>
+                                    <div class="flex-1">
+                                        <strong>Not quite!</strong> That answer can make your teammate feel ignored. 
+                                        <button onclick="retryQ1()" class="ml-2 font-bold underline hover:text-rose-950 cursor-pointer">Try Again <i class="fa-solid fa-rotate-left"></i></button>
+                                    </div>
+                                </div>
+                            `) : ''}
+                        </div>
+                    </div>
+                    `;
+                }
+            },
+
+            // SLIDE 2: QUESTION 2 - Communication Barrier vs Effective Strategy Matcher
+            {
+                type: 'question2',
+                render: () => {
+                    const q2 = userState.q2;
+                    const items = [
+                        { phrase: "1. Giving feedback focused on behavior, not personality", target: "effective" },
+                        { phrase: "2. Assuming you know what the speaker means without asking", target: "barrier" },
+                        { phrase: "3. Maintaining eye contact and open body posture", target: "effective" },
+                        { phrase: "4. Using heavy technical jargon with a non-technical audience", target: "barrier" }
+                    ];
+
+                    let allCorrect = q2.attempted && Object.keys(q2.matches).every(idx => {
+                        return q2.matches[idx] === items[idx].target;
+                    });
+
+                    return `
+                    <div class="w-full max-w-3xl my-auto">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-extrabold text-deciBrightBlue uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
+                                Challenge 2 of 3: Strategy Matcher
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">Interactive Sorting</span>
+                        </div>
+
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900 mb-2">
+                            Classify Communication Behaviors
+                        </h3>
+                        <p class="text-xs md:text-sm text-slate-600 mb-4">
+                            Select whether each communication behavior is an <strong>Effective Strategy</strong> or a <strong>Communication Barrier</strong>.
+                        </p>
+
+                        <!-- Interactive Table / Matching list -->
+                        <div class="space-y-3 mb-5">
+                            ${items.map((item, idx) => {
+                                const userVal = q2.matches[idx];
+                                return `
+                                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs md:text-sm">
+                                    <span class="font-medium text-slate-800 flex-1">${item.phrase}</span>
+                                    
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <button onclick="handleQ2Match(${idx}, 'effective')" 
+                                                class="px-3 py-1.5 rounded-lg border text-xs font-bold transition cursor-pointer ${
+                                                    userVal === 'effective' 
+                                                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' 
+                                                        : 'bg-white text-slate-600 border-slate-300 hover:bg-emerald-50'
+                                                }">
+                                            <i class="fa-solid fa-thumbs-up mr-1"></i> Effective
+                                        </button>
+
+                                        <button onclick="handleQ2Match(${idx}, 'barrier')" 
+                                                class="px-3 py-1.5 rounded-lg border text-xs font-bold transition cursor-pointer ${
+                                                    userVal === 'barrier' 
+                                                        ? 'bg-rose-600 text-white border-rose-600 shadow-sm' 
+                                                        : 'bg-white text-slate-600 border-slate-300 hover:bg-rose-50'
+                                                }">
+                                            <i class="fa-solid fa-ban mr-1"></i> Barrier
+                                        </button>
+                                    </div>
+                                </div>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <!-- Verify / Check Answers Button -->
+                        <div class="flex items-center justify-between">
+                            <button onclick="checkQ2Answers()" class="px-5 py-2.5 bg-deciBrightBlue hover:bg-deciMidBlue text-white font-bold rounded-xl text-xs md:text-sm shadow-md transition cursor-pointer flex items-center gap-2">
+                                <i class="fa-solid fa-vial-circle-check"></i> Check Answers
+                            </button>
+
+                            <button onclick="resetQ2()" class="text-xs text-slate-500 hover:text-slate-800 underline flex items-center gap-1 cursor-pointer">
+                                <i class="fa-solid fa-rotate-left"></i> Reset selections
+                            </button>
+                        </div>
+
+                        <!-- Feedback Message -->
+                        ${q2.attempted ? `
+                            <div class="mt-4 p-3.5 rounded-xl text-xs md:text-sm ${allCorrect ? 'bg-emerald-100 border border-emerald-300 text-emerald-900' : 'bg-amber-100 border border-amber-300 text-amber-900'} flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid ${allCorrect ? 'fa-circle-check text-emerald-600' : 'fa-circle-info text-amber-600'} text-lg"></i>
+                                    <span>${allCorrect ? 'Awesome job! All 4 behaviors correctly identified (+100 pts)!' : 'Some classifications are incorrect or missing. Adjust your choices and try again!'}</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                    `;
+                }
+            },
+
+            // SLIDE 3: QUESTION 3 - Team Conflict Resolution Simulation
+            {
+                type: 'question3',
+                render: () => {
+                    const q3 = userState.q3;
+                    return `
+                    <div class="w-full max-w-3xl my-auto">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-extrabold text-deciBrightBlue uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
+                                Challenge 3 of 3: Conflict Resolution
+                            </span>
+                            <span class="text-xs text-slate-400 font-mono">Team Leadership</span>
+                        </div>
+
+                        <h3 class="text-xl md:text-2xl font-bold text-slate-900 mb-2">
+                            Scenario: The Presentation Layout Debate
+                        </h3>
+
+                        <p class="text-xs md:text-sm text-slate-600 mb-4 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                            <strong>Context:</strong> Your DECI Summer Camp final presentation is in 1 hour. Two team members are arguing intensely about which color scheme and layout to use for the presentation slides. How do you facilitate a solution?
+                        </p>
+
+                        <!-- Choice Cards -->
+                        <div class="space-y-3 mb-5">
+                            ${[
+                                {
+                                    id: 1,
+                                    title: "Option A: Collaborative Synthesis",
+                                    desc: "Acknowledge both ideas, point out shared goal (a clear presentation), and propose a 2-minute quick vote or hybrid design.",
+                                    pts: 100,
+                                    badge: "Best Approach",
+                                    badgeBg: "bg-emerald-100 text-emerald-800"
+                                },
+                                {
+                                    id: 2,
+                                    title: "Option B: Top-Down Decision",
+                                    desc: "Pick your personal favorite design immediately and tell the other person to drop their idea so you can finish faster.",
+                                    pts: 40,
+                                    badge: "Sub-optimal",
+                                    badgeBg: "bg-amber-100 text-amber-800"
+                                },
+                                {
+                                    id: 3,
+                                    title: "Option C: Avoidance",
+                                    desc: "Step away from the conversation and let them figure it out on their own while you work on something else.",
+                                    pts: 0,
+                                    badge: "Risky",
+                                    badgeBg: "bg-rose-100 text-rose-800"
+                                }
+                            ].map((opt) => {
+                                const isSelected = q3.selectedOption === opt.id;
+                                return `
+                                    <div onclick="handleQ3Select(${opt.id}, ${opt.pts})" 
+                                         class="p-3.5 rounded-xl border-2 transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                                            isSelected 
+                                                ? 'border-deciBrightBlue bg-blue-50/80 shadow-md ring-2 ring-blue-200' 
+                                                : 'border-slate-200 bg-white hover:border-blue-300 hover:bg-slate-50'
+                                         }">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <h4 class="font-bold text-sm text-slate-800">${opt.title}</h4>
+                                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${opt.badgeBg}">${opt.badge}</span>
+                                            </div>
+                                            <p class="text-xs text-slate-600">${opt.desc}</p>
+                                        </div>
+                                        
+                                        <div class="shrink-0 text-right">
+                                            <span class="text-xs font-bold text-deciMidBlue bg-white px-2.5 py-1 rounded-lg border border-slate-200 shadow-xs">
+                                                ${opt.pts} pts
+                                            </span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        ${q3.attempted ? `
+                            <div class="p-3.5 rounded-xl bg-blue-100/80 border border-blue-300 text-slate-800 text-xs md:text-sm flex items-center justify-between">
+                                <div>
+                                    <strong>Result:</strong> Awarded <strong>${q3.chosenScore} points</strong>! You can re-select options anytime to test different management styles.
+                                </div>
+                                <button onclick="nextSlide()" class="font-bold text-deciBrightBlue underline hover:text-deciDeepBlue cursor-pointer">
+                                    View Final Summary <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                    `;
+                }
+            },
+
+            // SLIDE 4: Presentation Conclusion & Scorecard
+            {
+                type: 'summary',
+                render: () => {
+                    const totalScore = calculateTotalScore();
+                    const maxScore = 300;
+                    const percentage = Math.round((totalScore / maxScore) * 100);
+
+                    return `
+                    <div class="max-w-2xl my-auto text-center mx-auto">
+                        <div class="inline-block p-4 rounded-full bg-blue-50 border border-blue-200 mb-4 animate-bounce">
+                            <i class="fa-solid fa-trophy text-4xl text-amber-500"></i>
+                        </div>
+
+                        <h2 class="text-2xl md:text-4xl font-extrabold text-deciDeepBlue mb-2">
+                            Presentation Complete!
+                        </h2>
+                        <p class="text-sm text-slate-600 mb-6">
+                            Great work presenting and practicing communication strategies for the DECI Summer Camp!
+                        </p>
+
+                        <!-- Score Card -->
+                        <div class="glass-card p-6 rounded-2xl shadow-lg border border-blue-100 max-w-md mx-auto mb-6">
+                            <span class="text-xs font-bold uppercase tracking-widest text-slate-400">Total Communication Score</span>
+                            <div class="text-4xl md:text-5xl font-black text-deciBrightBlue my-2">
+                                ${totalScore} <span class="text-lg text-slate-400 font-normal">/ ${maxScore} pts</span>
+                            </div>
+
+                            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden mb-3">
+                                <div class="bg-gradient-to-r from-blue-500 to-emerald-500 h-full" style="width: ${percentage}%"></div>
+                            </div>
+
+                            <p class="text-xs font-medium text-slate-700">
+                                ${percentage >= 80 
+                                    ? "🌟 Communication Champion! You demonstrated active listening, constructive feedback, and conflict resolution." 
+                                    : "👍 Good effort! You can retry any question to boost your score to 100%!"}
+                            </p>
+                        </div>
+
+                        <!-- Interactive Action Buttons -->
+                        <div class="flex flex-wrap items-center justify-center gap-3">
+                            <button onclick="triggerConfetti()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs md:text-sm rounded-xl shadow-md transition cursor-pointer flex items-center gap-2">
+                                <i class="fa-solid fa-party-horn"></i> Celebrate!
+                            </button>
+
+                            <button onclick="resetPresentation()" class="px-5 py-2.5 bg-deciBrightBlue hover:bg-deciMidBlue text-white font-bold text-xs md:text-sm rounded-xl shadow-md transition cursor-pointer flex items-center gap-2">
+                                <i class="fa-solid fa-rotate-left"></i> Replay Presentation
+                            </button>
+                        </div>
+                    </div>
+                    `;
+                }
+            }
+        ];
+
+        // Render current slide to viewport
+        function renderSlide() {
+            const container = document.getElementById('slide-container');
+            container.innerHTML = slides[currentSlide].render();
+            
+            // Update slide header indicators
+            document.getElementById('slide-number-display').innerText = `Slide ${currentSlide + 1}/${slides.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
+
+            // Navigation buttons status
+            document.getElementById('prev-btn').disabled = (currentSlide === 0);
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (currentSlide === slides.length - 1) {
+                nextBtn.innerHTML = `Finish <i class="fa-solid fa-check"></i>`;
+            } else {
+                nextBtn.innerHTML = `Next <i class="fa-solid fa-arrow-right"></i>`;
+            }
+
+            // Update visible score tag
+            updateScoreUI();
+
+            // Trigger confetti if on final slide with high score
+            if (currentSlide === slides.length - 1 && calculateTotalScore() >= 200) {
+                setTimeout(triggerConfetti, 300);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                playSound('click');
+                currentSlide++;
+                renderSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                playSound('click');
+                currentSlide--;
+                renderSlide();
+            }
+        }
+
+        // --- QUESTION 1 HANDLERS ---
+        function handleQ1Answer(optionId, isCorrect) {
+            userState.q1.attempted = true;
+            userState.q1.selected = optionId;
+            userState.q1.correct = isCorrect;
+
+            playSound(isCorrect ? 'correct' : 'wrong');
+            renderSlide();
+        }
+
+        function retryQ1() {
+            playSound('click');
+            userState.q1.attempted = false;
+            userState.q1.selected = null;
+            userState.q1.correct = false;
+            renderSlide();
+        }
+
+        // --- QUESTION 2 HANDLERS ---
+        function handleQ2Match(idx, choice) {
+            playSound('click');
+            userState.q2.matches[idx] = choice;
+            renderSlide();
+        }
+
+        function checkQ2Answers() {
+            userState.q2.attempted = true;
+            
+            const items = [
+                { target: "effective" },
+                { target: "barrier" },
+                { target: "effective" },
+                { target: "barrier" }
+            ];
+
+            const allCorrect = Object.keys(userState.q2.matches).every(idx => {
+                return userState.q2.matches[idx] === items[idx].target;
+            });
+
+            playSound(allCorrect ? 'correct' : 'wrong');
+            renderSlide();
+        }
+
+        function resetQ2() {
+            playSound('click');
+            userState.q2.attempted = false;
+            userState.q2.matches = { 0: null, 1: null, 2: null, 3: null };
+            renderSlide();
+        }
+
+        // --- QUESTION 3 HANDLERS ---
+        function handleQ3Select(optionId, points) {
+            playSound(points > 50 ? 'correct' : 'click');
+            userState.q3.attempted = true;
+            userState.q3.selectedOption = optionId;
+            userState.q3.chosenScore = points;
+            renderSlide();
+        }
+
+        // Calculate dynamic total score across all retries
+        function calculateTotalScore() {
+            let total = 0;
+            if (userState.q1.correct) total += 100;
+            
+            // Check Q2 score
+            const items = ['effective', 'barrier', 'effective', 'barrier'];
+            let q2CorrectCount = 0;
+            items.forEach((target, idx) => {
+                if (userState.q2.matches[idx] === target) q2CorrectCount++;
+            });
+            total += (q2CorrectCount * 25); // 25 pts each = 100 max
+
+            // Q3 Score
+            if (userState.q3.attempted) {
+                total += userState.q3.chosenScore;
+            }
+
+            return total;
+        }
+
+        function updateScoreUI() {
+            const scoreTag = document.getElementById('score-tag');
+            const scoreDisplay = document.getElementById('current-score');
+            const total = calculateTotalScore();
+            
+            scoreDisplay.innerText = total;
+            if (total > 0) {
+                scoreTag.classList.remove('hidden');
+            } else {
+                scoreTag.classList.add('hidden');
+            }
+        }
+
+        // Reset full presentation
+        function resetPresentation() {
+            playSound('click');
+            currentSlide = 0;
+            userState.q1 = { attempted: false, correct: false, selected: null };
+            userState.q2 = { attempted: false, matches: { 0: null, 1: null, 2: null, 3: null } };
+            userState.q3 = { attempted: false, chosenScore: 0, selectedOption: null };
+            renderSlide();
+        }
+
+        // Confetti celebration trigger
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Keyboard arrow key navigation support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // Initialize presentation on window load
+        window.onload = function() {
+            renderSlide();
+        };
+    </script>
+</body>
+</html>
